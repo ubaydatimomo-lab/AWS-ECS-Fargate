@@ -21,6 +21,20 @@ const baseUrl = process.env.BASE_URL ?? '/';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    {
+      name: 'health-endpoint',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url === '/health') {
+            res.setHeader('Content-Type', 'application/json');
+            res.statusCode = 200;
+            res.end(JSON.stringify({ status: 'ok' }));
+            return;
+          }
+          next();
+        });
+      },
+    },
     VueI18n({
       runtimeOnly: true,
       jitCompilation: true,
