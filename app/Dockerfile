@@ -10,5 +10,7 @@ RUN pnpm build
 FROM nginx:alpine AS production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+HEALTHCHECK --interval=5m --timeout=3s \
+CMD curl -f http://localhost/health || exit 1
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
